@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>virtual tour</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-animation-component@^4.1.2/dist/aframe-animation-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+
+    <script>
+          AFRAME.registerComponent('hotspots',{
+        init:function(){
+            this.el.addEventListener('reloadspots',function(evt){
+            
+            //get the entire current spot group and scale it to 0
+            var currspotgroup=document.getElementById(evt.detail.currspots);
+            currspotgroup.setAttribute("scale","0 0 0");
+            
+            //get the entire new spot group and scale it to 1
+            var newspotgroup=document.getElementById(evt.detail.newspots);
+            newspotgroup.setAttribute("scale","1 1 1");
+          });
+        }
+      });
+      AFRAME.registerComponent('spot',{
+        schema:{
+          linkto:{type:"string",default:""},
+          spotgroup:{type:"string",default:""}
+        },
+        init:function(){
+          
+          //add image source of hotspot icon
+          this.el.setAttribute("src","#hotspot");
+          //make the icon look at the camera all the time
+          this.el.setAttribute("look-at","#cam");
+          
+          var data=this.data;
+          
+          this.el.addEventListener('click',function(){
+            //set the skybox source to the new image as per the spot
+            var sky=document.getElementById("skybox");
+            sky.setAttribute("src",data.linkto);
+            
+            var spotcomp=document.getElementById("spots");
+            var currspots=this.parentElement.getAttribute("id");
+            //create event for spots component to change the spots data
+            spotcomp.emit('reloadspots',{newspots:data.spotgroup,currspots:currspots});
+          });
+        }
+      });
+    </script>
+</head>
+
+<body>
+    <a-scene background="color: #FAFAFA">
+        <a-assets>
+            <img id="room0" src="./images/0.JPG">
+            <img id="room1" src="./images/1.JPG">
+            <img id="room2" src="./images/2.JPG">
+            <img id="room3" src="./images/3.JPG">
+            <img id="room4" src="./images/4.JPG">
+            <img id="room5" src="./images/5.JPG">
+            <img id="room6" src="./images/6.JPG">
+            <img id="room7" src="./images/7.JPG">
+            <img id="room8" src="./images/8.JPG">
+            <img id="hotspot" src="./images/icon.webp">
+        </a-assets>
+        <a-sky id="skybox" src="#room0"></a-sky>
+
+
+
+        <a-entity id="cam" camera position="0 1.6 0" look-controls>
+            <a-entity cursor="fuse:true;fuseTimeout:2000" geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.02"
+                position="0 0 -1.8" material="shader:flat;color:#ff0000"
+                animation__mouseenter="property:scale;to:3 3 3;startEvents:mouseenter;endEvents:mouseleave;dir:reverse;dur:2000;loop:1">
+            </a-entity>
+        </a-entity>
+
+        <a-entity id="spots" hotspots>
+            <a-entity id="group-room0" scale="1 1 1">
+              <a-image spot="linkto:#room1;spotgroup:group-room1" position="0 3 -10"></a-image>
+              <a-image spot="linkto:#room2;spotgroup:group-room2" position="13 3 -10"></a-image>
+              <a-image spot="linkto:#room3;spotgroup:group-room3" position="20 12 -5"></a-image>
+            </a-entity>
+            <a-entity id="group-room1" scale="0 0 0">
+              <a-image spot="linkto:#room0;spotgroup:group-room0" position="10 0 0"></a-image>
+            </a-entity>
+            <a-entity id="group-room2" scale="0 0 0">
+              <a-image spot="linkto:#room0;spotgroup:group-room0" position="-10 1 3"></a-image>
+            </a-entity>
+            <a-entity id="group-room3" scale="0 0 0">
+              <a-image spot="linkto:#room0;spotgroup:group-room0" position="15 -6 -4"></a-image>
+            </a-entity>
+    </a-entity>
+
+    </a-scene>
+
+
+</body>
+
+</html>
