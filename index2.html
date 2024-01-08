@@ -72,9 +72,10 @@
 
 
         <a-entity id="cam" camera position="0 1.6 0" look-controls>
-          <a-entity camera position="0 1.6 0" look-controls></a-entity>
-          <a-entity cursor="rayOrigin:mouse"></a-entity>
-          <a-entity laser-controls="hand: right"></a-entity>
+            <a-entity cursor="fuse:true;fuseTimeout:2000" geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.02"
+                position="0 0 -1.8" material="shader:flat;color:#ff0000"
+                animation__mouseenter="property:scale;to:3 3 3;startEvents:mouseenter;endEvents:mouseleave;dir:reverse;dur:2000;loop:1">
+            </a-entity>
         </a-entity>
 
         <a-entity id="spots" hotspots>
@@ -96,7 +97,6 @@
 
     </a-scene>
 
-    <!-- https://jgbarah.github.io/aframe-playground/interaction-02/ -->
 
 </body>
 
